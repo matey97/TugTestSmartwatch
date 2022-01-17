@@ -18,6 +18,11 @@ public class IntentManager {
     private static final String NODE = "NODE";
     private static final String PROTOCOL = "PROTOCOL";
 
+    public static final String INTENT_REQUEST = "es.uji.geotec.tugtest.IntentManager.INTENT_REQUEST";
+    public static final String INTENT_MESSAGE = "es.uji.geotec.tugtest.IntentManager.INTENT_MESSAGE";
+    public static final String INTENT_MESSAGE_STARTED = "es.uji.geotec.tugtest.IntentManager.INTENT_MESSAGE_STARTED";
+    public static final String INTENT_MESSAGE_ENDED = "es.uji.geotec.tugtest.IntentManager.INTENT_MESSAGE_ENDED";
+
     private IntentManager() {
     }
 
@@ -44,6 +49,12 @@ public class IntentManager {
                 permissionRequester,
                 PendingIntent.FLAG_UPDATE_CURRENT
         );
+    }
+
+    public static Intent intentForUIUpdate(String message) {
+        Intent intent = new Intent(INTENT_REQUEST);
+        intent.putExtra(INTENT_MESSAGE, message);
+        return intent;
     }
 
     public static ArrayList<String> permissionsToRequestFromIntent(Intent intent) {

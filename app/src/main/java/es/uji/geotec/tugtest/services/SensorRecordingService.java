@@ -9,10 +9,12 @@ import android.os.PowerManager;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import java.util.HashSet;
 import java.util.Set;
 
+import es.uji.geotec.tugtest.IntentManager;
 import es.uji.geotec.tugtest.NotificationProvider;
 import es.uji.geotec.tugtest.sensoring.CollectorManager;
 import es.uji.geotec.tugtest.sensoring.SensoringConfiguration;
@@ -69,6 +71,8 @@ public class SensorRecordingService extends Service {
 
         runInForegroundWithNotification();
 
+        sendUpdateUIBroadcast(IntentManager.INTENT_MESSAGE_STARTED);
+
         return START_STICKY;
     }
 
@@ -85,6 +89,11 @@ public class SensorRecordingService extends Service {
         Notification notification = notificationProvider.getNotificationForRecordingService();
 
         startForeground(notificationId, notification);
+    }
+
+    private void sendUpdateUIBroadcast(String message) {
+        Intent intent = IntentManager.intentForUIUpdate(message);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
     private void startRecordingFor(SensoringConfiguration sensoringConfiguration) {
@@ -116,6 +125,7 @@ public class SensorRecordingService extends Service {
 
     private void gracefullyStop() {
         stopForeground(true);
+        sendUpdateUIBroadcast(IntentManager.INTENT_MESSAGE_ENDED);
         if (wakeLock.isHeld()) {
             wakeLock.release();
         }
