@@ -1,23 +1,45 @@
 package es.uji.geotec.tugtest;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.ToggleButton;
+
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import es.uji.geotec.tugtest.command.CommandClient;
-import es.uji.geotec.tugtest.sensoring.WearSensor;
 
 public class MainActivity extends Activity {
 
+    enum Mode {
+        TUG("start-execution", "stop-execution"), COLLECTION("start-collection", "stop-collection");
+
+        private String start, stop;
+        Mode(String start, String stop) {
+            this.start = start;
+            this.stop = stop;
+        }
+    }
+
     private LinearLayout linearLayout;
-    private Button startAll, stopAll, startSingle, stopSingle;
-    private Spinner sensorSpinner;
+    private TextView infoText;
+    private Button startBtn, stopBtn;
+    private ProgressBar waitBar;
+    private ToggleButton modeToggle;
+    private Mode mode;
+
+    private BroadcastReceiver receiver;
 
     private CommandClient commandClient;
 
@@ -27,67 +49,107 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         setupLayout();
-        setupButtons();
-        setupSpinner();
+        setupUIComponents();
+        setupReceiver();
 
         commandClient = new CommandClient(this);
     }
 
-    public void onStartAllCommandTap(View view) {
-        toggleVisibility(stopAll, startAll);
-        commandClient.sendCommand("start-collection", SensorManager.SENSOR_DELAY_FASTEST, 50);
+    @Override
+    protected void onStart() {
+        super.onStart();
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                receiver,
+                new IntentFilter(IntentManager.INTENT_REQUEST)
+        );
     }
 
-    public void onStopAllCommandTap(View view) {
-        toggleVisibility(startAll, stopAll);
-        commandClient.sendCommand("stop-collection");
+    @Override
+    protected void onStop() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+        super.onStop();
     }
 
-    public void onStartSingleCommandTap(View view) {
-        toggleVisibility(stopSingle, startSingle);
-        String selectedSensor = (String) sensorSpinner.getSelectedItem();
-        sensorSpinner.setEnabled(false);
-
-        commandClient.sendCommand("start-" + selectedSensor.toLowerCase());
+    public void onStartCommandTap(View view) {
+        waitingToStart();
+        commandClient.sendCommand(mode.start, SensorManager.SENSOR_DELAY_FASTEST, 50);
     }
 
-    public void onStopSingleCommandTap(View view) {
-        toggleVisibility(startSingle, stopSingle);
-        String selectedSensor = (String) sensorSpinner.getSelectedItem();
-        sensorSpinner.setEnabled(true);
-
-        commandClient.sendCommand("stop-" + selectedSensor.toLowerCase());
+    public void onStopCommandTap(View view) {
+        commandClient.sendCommand(mode.stop);
     }
 
     private void setupLayout() {
         linearLayout = findViewById(R.id.linear_layout);
         if (this.getResources().getConfiguration().isScreenRound()) {
-            int padding = (int) (Resources.getSystem().getDisplayMetrics().widthPixels * 0.146467f);
+            int padding = (int) (Resources.getSystem().getDisplayMetrics().widthPixels * 0.12f);
             linearLayout.setPadding(padding, padding, padding, padding);
         }
     }
 
-    private void setupButtons() {
-        startAll = findViewById(R.id.start_all_command);
-        stopAll = findViewById(R.id.stop_all_command);
-        startSingle = findViewById(R.id.start_single_command);
-        stopSingle = findViewById(R.id.stop_single_command);
+    private void setupUIComponents() {
+        infoText = findViewById(R.id.info_text);
+        startBtn = findViewById(R.id.start_command);
+        stopBtn = findViewById(R.id.stop_command);
+        waitBar = findViewById(R.id.waitBar);
+        modeToggle = findViewById(R.id.toggleMode);
+        modeToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                mode = isChecked ? Mode.TUG : Mode.COLLECTION;
+                toggleMode();
+            }
+        });
+        mode = Mode.TUG;
     }
 
-    private void setupSpinner() {
-        sensorSpinner = findViewById(R.id.sensor_spinner);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        for (WearSensor sensor : WearSensor.values()) {
-            adapter.add(sensor.toString());
+    private void setupReceiver() {
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                switch (intent.getStringExtra(IntentManager.INTENT_MESSAGE)) {
+                    case IntentManager.INTENT_MESSAGE_STARTED:
+                        executionStarted();
+                        break;
+                    case IntentManager.INTENT_MESSAGE_ENDED:
+                        executionEnded();
+                        break;
+                }
+            }
+        };
+    }
+
+    private void waitingToStart() {
+        startBtn.setVisibility(View.GONE);
+        waitBar.setVisibility(View.VISIBLE);
+        infoText.setText(R.string.wait_info);
+        modeToggle.setEnabled(false);
+    }
+
+    private void executionStarted() {
+        waitBar.setVisibility(View.GONE);
+        stopBtn.setVisibility(View.VISIBLE);
+        infoText.setText(mode == Mode.TUG ? R.string.execution_info : R.string.collection_info);
+    }
+
+    private void executionEnded() {
+        stopBtn.setVisibility(View.GONE);
+        startBtn.setVisibility(View.VISIBLE);
+        infoText.setText(mode == Mode.TUG ? R.string.start_info : R.string.start_collection_info);
+        modeToggle.setEnabled(true);
+    }
+
+    private void toggleMode() {
+        int start = R.string.start_test , stop = R.string.end_test, info = R.string.start_info;
+        if (mode == Mode.COLLECTION) {
+            start = R.string.start_collection;
+            stop = R.string.end_collection;
+            info = R.string.start_collection_info;
         }
 
-        sensorSpinner.setAdapter(adapter);
-    }
-
-    private void toggleVisibility(Button setVisible, Button setGone) {
-        setVisible.setVisibility(View.VISIBLE);
-        setGone.setVisibility(View.GONE);
+        startBtn.setText(start);
+        stopBtn.setText(stop);
+        infoText.setText(info);
     }
 }

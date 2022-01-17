@@ -17,4 +17,15 @@
     <string name="sensoring_channel_description">Sensoring</string>
     <string name="sensoring_notification_title">Sensoring</string>
     <string name="sensoring_notification_body">Collecting data from sensors</string>
+
+    <string name="start_info">Tap "Start test" to start a TUG test. The watch will vibrate when you can start executing it</string>
+    <string name="start_test">Start test</string>
+    <string name="wait_info">Wait for vibration to start.</string>
+    <string name="execution_info">You can start the test. It will automatically end when you sit down. You can manually stop it by tapping "End test"</string>
+    <string name="end_test">End test</string>
+
+    <string name="start_collection_info">Tap "Start collection" to start collecting data. The watch will vibrate when collection started.</string>
+    <string name="start_collection">Start collection</string>
+    <string name="collection_info">You can start the execution of the test. Tap Stop collection to end data collection.</string>
+    <string name="end_collection">Stop collection</string>
 </resources>
