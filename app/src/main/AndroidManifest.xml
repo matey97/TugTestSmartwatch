@@ -67,6 +67,10 @@
                     android:host="*"
                     android:pathPattern="/.*/stop"
                     android:scheme="wear" />
+                <data
+                    android:host="*"
+                    android:pathPattern="/result"
+                    android:scheme="wear" />
             </intent-filter>
         </service>
 
