@@ -16,11 +16,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import androidx.activity.ComponentActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import es.uji.geotec.tugtest.command.CommandClient;
 
-public class MainActivity extends Activity {
+public class MainActivity extends ComponentActivity {
 
     enum Mode {
         TUG("start-execution", "stop-execution"), COLLECTION("start-collection", "stop-collection");
