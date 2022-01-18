@@ -23,6 +23,8 @@ public class IntentManager {
     public static final String INTENT_MESSAGE_STARTED = "es.uji.geotec.tugtest.IntentManager.INTENT_MESSAGE_STARTED";
     public static final String INTENT_MESSAGE_ENDED = "es.uji.geotec.tugtest.IntentManager.INTENT_MESSAGE_ENDED";
 
+    public static final String INTENT_TEST_RESULT = "es.uji.geotec.tugtest.IntentManager.INTENT_TEST_RESULT";
+
     private IntentManager() {
     }
 
@@ -54,6 +56,13 @@ public class IntentManager {
     public static Intent intentForUIUpdate(String message) {
         Intent intent = new Intent(INTENT_REQUEST);
         intent.putExtra(INTENT_MESSAGE, message);
+        return intent;
+    }
+
+    public static Intent intentForTestResult(Context context, int result) {
+        Intent intent = new Intent(context, ResultActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(INTENT_TEST_RESULT, result);
         return intent;
     }
 

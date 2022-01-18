@@ -28,4 +28,11 @@
     <string name="start_collection">Start collection</string>
     <string name="collection_info">You can start the execution of the test. Tap Stop collection to end data collection.</string>
     <string name="end_collection">Stop collection</string>
+    <string name="title_activity_result">ResultActivity</string>
+
+    <string name="result_title">TUG Result</string>
+    <string name="result_info_success">Time used to perform the test:</string>
+    <string name="result_info_failure">Something went wrong. Try again.</string>
+    <string name="result_unit">seconds</string>
+    <string name="result_extended_info">Go to smartphone app to see detailed results</string>
 </resources>
