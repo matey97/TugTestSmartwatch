@@ -4,6 +4,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 
+import es.uji.geotec.tugtest.NTPTime;
 import es.uji.geotec.tugtest.records.TriAxialRecord;
 import es.uji.geotec.tugtest.records.accumulator.RecordAccumulator;
 import es.uji.geotec.tugtest.sensoring.WearSensor;
@@ -12,10 +13,12 @@ public class TriAxialSensorListener implements SensorEventListener {
 
     private WearSensor sensor;
     private RecordAccumulator accumulator;
+    private NTPTime ntpTime;
 
     public TriAxialSensorListener(WearSensor sensor, RecordAccumulator recordAccumulator) {
         this.sensor = sensor;
         this.accumulator = recordAccumulator;
+        this.ntpTime = NTPTime.getInstance();
     }
 
     @Override
@@ -27,7 +30,7 @@ public class TriAxialSensorListener implements SensorEventListener {
         float yValue = event.values[1];
         float zValue = event.values[2];
 
-        TriAxialRecord record = new TriAxialRecord(System.currentTimeMillis(), xValue, yValue, zValue);
+        TriAxialRecord record = new TriAxialRecord(ntpTime.currentTime(), xValue, yValue, zValue);
         accumulator.accumulateRecord(record);
     }
 

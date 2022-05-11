@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import es.uji.geotec.tugtest.IntentManager;
+import es.uji.geotec.tugtest.NTPTime;
 import es.uji.geotec.tugtest.NotificationProvider;
 import es.uji.geotec.tugtest.sensoring.CollectorManager;
 import es.uji.geotec.tugtest.sensoring.SensoringConfiguration;
@@ -48,6 +49,7 @@ public class SensorRecordingService extends Service {
     private PowerManager.WakeLock wakeLock;
     private Set<WearSensor> sensorsBeingRecorded;
     private CollectorManager collectorManager;
+    private NTPTime ntpTime;
 
     @Override
     public void onCreate() {
@@ -59,6 +61,9 @@ public class SensorRecordingService extends Service {
         sensorsBeingRecorded = new HashSet<>();
 
         collectorManager = new CollectorManager(this);
+
+        ntpTime = NTPTime.getInstance();
+        ntpTime.sync();
     }
 
     @Override
@@ -124,6 +129,7 @@ public class SensorRecordingService extends Service {
     }
 
     private void gracefullyStop() {
+        ntpTime.disableSync();
         stopForeground(true);
         sendUpdateUIBroadcast(IntentManager.INTENT_MESSAGE_ENDED);
         if (wakeLock.isHeld()) {
