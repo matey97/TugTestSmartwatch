@@ -9,7 +9,7 @@ public class NTPTime {
     private GoodClock clock;
 
     private NTPTime() {
-        clock = new GoodClock();
+        clock = new GoodClock(5, GoodClock.DEFAULT_UPDATE_INTERVAL);
     }
 
     public static NTPTime getInstance() {
@@ -23,7 +23,7 @@ public class NTPTime {
         clock.start();
 
         try {
-            Thread.sleep(1000);
+            Thread.sleep(1500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
