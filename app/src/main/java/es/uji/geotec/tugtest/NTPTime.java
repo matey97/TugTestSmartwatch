@@ -1,5 +1,7 @@
 package es.uji.geotec.tugtest;
 
+import android.util.Log;
+
 import com.nesl.ntp.GoodClock;
 
 public class NTPTime {
@@ -20,20 +22,12 @@ public class NTPTime {
     }
 
     public void sync() {
-        clock.start();
-
-        try {
-            Thread.sleep(1500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        Log.d("NTPTime", "starting sync");
+        boolean success = clock.singleSync();
+        Log.d("NTPTime", "sync succeeded: " + success);
     }
 
     public long currentTime() {
         return clock.SntpSuceeded ? clock.Now() : System.currentTimeMillis();
-    }
-
-    public void disableSync() {
-        clock.stop();
     }
 }

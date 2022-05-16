@@ -129,7 +129,6 @@ public class SensorRecordingService extends Service {
     }
 
     private void gracefullyStop() {
-        ntpTime.disableSync();
         stopForeground(true);
         sendUpdateUIBroadcast(IntentManager.INTENT_MESSAGE_ENDED);
         if (wakeLock.isHeld()) {
