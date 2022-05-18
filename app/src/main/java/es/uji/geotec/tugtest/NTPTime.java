@@ -21,10 +21,11 @@ public class NTPTime {
         return instance;
     }
 
-    public void sync() {
+    public boolean sync() {
         Log.d("NTPTime", "starting sync");
         boolean success = clock.singleSync();
         Log.d("NTPTime", "sync succeeded: " + success);
+        return success;
     }
 
     public long currentTime() {

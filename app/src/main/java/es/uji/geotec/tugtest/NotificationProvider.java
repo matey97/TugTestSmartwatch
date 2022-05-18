@@ -89,7 +89,7 @@ public class NotificationProvider {
                     NotificationManager.IMPORTANCE_HIGH
             );
 
-            channel.enableVibration(true);
+            // channel.enableVibration(true);
 
             notificationManager.createNotificationChannel(channel);
         }
