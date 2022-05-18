@@ -23,37 +23,29 @@ import es.uji.geotec.tugtest.command.CommandClient;
 
 public class MainActivity extends ComponentActivity {
 
-    enum Mode {
-        TUG("start-execution", "stop-execution"), COLLECTION("start-collection", "stop-collection");
-
-        private String start, stop;
-        Mode(String start, String stop) {
-            this.start = start;
-            this.stop = stop;
-        }
-    }
-
     private LinearLayout linearLayout;
     private TextView infoText;
     private Button startBtn, stopBtn;
     private ProgressBar waitBar;
     private ToggleButton modeToggle;
-    private Mode mode;
+    private ApplicationMode mode;
 
     private BroadcastReceiver receiver;
 
     private CommandClient commandClient;
+    private PreferencesManager preferencesManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        commandClient = new CommandClient(this);
+        preferencesManager = new PreferencesManager(this);
+
         setupLayout();
         setupUIComponents();
         setupReceiver();
-
-        commandClient = new CommandClient(this);
     }
 
     @Override
@@ -93,15 +85,19 @@ public class MainActivity extends ComponentActivity {
         startBtn = findViewById(R.id.start_command);
         stopBtn = findViewById(R.id.stop_command);
         waitBar = findViewById(R.id.waitBar);
+
+        mode = preferencesManager.getApplicationMode();
         modeToggle = findViewById(R.id.toggleMode);
+        modeToggle.setChecked(mode == ApplicationMode.TUG);
         modeToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mode = isChecked ? Mode.TUG : Mode.COLLECTION;
+                mode = isChecked ? ApplicationMode.TUG : ApplicationMode.COLLECTION;
+                preferencesManager.setApplicationMode(mode);
                 toggleMode();
             }
         });
-        mode = Mode.TUG;
+        toggleMode();
     }
 
 
@@ -131,19 +127,19 @@ public class MainActivity extends ComponentActivity {
     private void executionStarted() {
         waitBar.setVisibility(View.GONE);
         stopBtn.setVisibility(View.VISIBLE);
-        infoText.setText(mode == Mode.TUG ? R.string.execution_info : R.string.collection_info);
+        infoText.setText(mode == ApplicationMode.TUG ? R.string.execution_info : R.string.collection_info);
     }
 
     private void executionEnded() {
         stopBtn.setVisibility(View.GONE);
         startBtn.setVisibility(View.VISIBLE);
-        infoText.setText(mode == Mode.TUG ? R.string.start_info : R.string.start_collection_info);
+        infoText.setText(mode == ApplicationMode.TUG ? R.string.start_info : R.string.start_collection_info);
         modeToggle.setEnabled(true);
     }
 
     private void toggleMode() {
         int start = R.string.start_test , stop = R.string.end_test, info = R.string.start_info;
-        if (mode == Mode.COLLECTION) {
+        if (mode == ApplicationMode.COLLECTION) {
             start = R.string.start_collection;
             stop = R.string.end_collection;
             info = R.string.start_collection_info;
