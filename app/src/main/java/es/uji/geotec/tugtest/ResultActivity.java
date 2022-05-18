@@ -1,8 +1,6 @@
 package es.uji.geotec.tugtest;
 
 import android.os.Bundle;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
 import android.view.View;
 import android.widget.TextView;
 
@@ -47,7 +45,7 @@ public class ResultActivity extends ComponentActivity {
     }
 
     private void doVibrate() {
-        Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-        vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+        VibratorManager vibratorManager = new VibratorManager(this);
+        vibratorManager.oneShotVibration(500);
     }
 }
