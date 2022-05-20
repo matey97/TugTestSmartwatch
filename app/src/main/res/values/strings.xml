@@ -35,4 +35,6 @@
     <string name="result_info_failure">Something went wrong. Try again.</string>
     <string name="result_unit">seconds</string>
     <string name="result_extended_info">Go to smartphone app to see detailed results</string>
+
+    <string name="ntp_sync_error">Unable to sync with NTP</string>
 </resources>

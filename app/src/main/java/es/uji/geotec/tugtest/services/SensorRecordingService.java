@@ -7,6 +7,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -14,8 +15,13 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import java.util.HashSet;
 import java.util.Set;
 
+import es.uji.geotec.tugtest.ApplicationMode;
 import es.uji.geotec.tugtest.IntentManager;
+import es.uji.geotec.tugtest.NTPTime;
 import es.uji.geotec.tugtest.NotificationProvider;
+import es.uji.geotec.tugtest.PreferencesManager;
+import es.uji.geotec.tugtest.R;
+import es.uji.geotec.tugtest.VibratorManager;
 import es.uji.geotec.tugtest.sensoring.CollectorManager;
 import es.uji.geotec.tugtest.sensoring.SensoringConfiguration;
 import es.uji.geotec.tugtest.sensoring.WearSensor;
@@ -48,6 +54,9 @@ public class SensorRecordingService extends Service {
     private PowerManager.WakeLock wakeLock;
     private Set<WearSensor> sensorsBeingRecorded;
     private CollectorManager collectorManager;
+    private PreferencesManager preferencesManager;
+    private VibratorManager vibratorManager;
+    private NTPTime ntpTime;
 
     @Override
     public void onCreate() {
@@ -59,6 +68,19 @@ public class SensorRecordingService extends Service {
         sensorsBeingRecorded = new HashSet<>();
 
         collectorManager = new CollectorManager(this);
+        preferencesManager = new PreferencesManager(this);
+        vibratorManager = new VibratorManager(this);
+
+        runInForegroundWithNotification();
+
+        ntpTime = NTPTime.getInstance();
+        boolean success = ntpTime.sync();
+        if (!success && preferencesManager.getApplicationMode() == ApplicationMode.COLLECTION) {
+            abortCollection();
+            return;
+        }
+
+        vibratorManager.oneShotVibration(100);
     }
 
     @Override
@@ -68,8 +90,6 @@ public class SensorRecordingService extends Service {
         if (!wakeLock.isHeld()) {
             wakeLock.acquire(TIMEOUT);
         }
-
-        runInForegroundWithNotification();
 
         sendUpdateUIBroadcast(IntentManager.INTENT_MESSAGE_STARTED);
 
@@ -121,6 +141,13 @@ public class SensorRecordingService extends Service {
             Log.d(TAG, "no more sensors being recorded");
             gracefullyStop();
         }
+    }
+
+    private void abortCollection() {
+        vibratorManager.oneShotVibration(500);
+        Toast.makeText(this, R.string.ntp_sync_error, Toast.LENGTH_LONG).show();
+
+        gracefullyStop();
     }
 
     private void gracefullyStop() {
