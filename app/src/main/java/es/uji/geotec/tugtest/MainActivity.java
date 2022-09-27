@@ -1,6 +1,5 @@
 package es.uji.geotec.tugtest;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -19,7 +18,14 @@ import android.widget.ToggleButton;
 import androidx.activity.ComponentActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import es.uji.geotec.tugtest.command.CommandClient;
+import es.uji.geotec.tugtest.intent.IntentManager;
+import es.uji.geotec.tugtest.tug.ApplicationMode;
+import es.uji.geotec.tugtest.tug.PreferencesManager;
+import es.uji.geotec.tugtest.tug.TugTestCommandClient;
+import es.uji.geotec.tugtest.tug.TugTestSensorRecordingService;
+import es.uji.geotec.wearossensors.permissions.PermissionsManager;
+import es.uji.geotec.wearossensors.plainmessage.PlainMessageClient;
+import es.uji.geotec.wearossensors.services.RecordingServiceManager;
 
 public class MainActivity extends ComponentActivity {
 
@@ -32,7 +38,8 @@ public class MainActivity extends ComponentActivity {
 
     private BroadcastReceiver receiver;
 
-    private CommandClient commandClient;
+    private TugTestCommandClient commandClient;
+    private PlainMessageClient plainMessageClient;
     private PreferencesManager preferencesManager;
 
     @Override
@@ -40,12 +47,16 @@ public class MainActivity extends ComponentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        commandClient = new CommandClient(this);
+        commandClient = new TugTestCommandClient(this);
+        plainMessageClient = new PlainMessageClient(this);
         preferencesManager = new PreferencesManager(this);
+        PermissionsManager.setPermissionsActivity(this, RequestPermissionsActivity.class);
+        RecordingServiceManager.setService(this, TugTestSensorRecordingService.class);
 
         setupLayout();
         setupUIComponents();
         setupReceiver();
+        setupMessageClient();
     }
 
     @Override
@@ -69,7 +80,7 @@ public class MainActivity extends ComponentActivity {
     }
 
     public void onStopCommandTap(View view) {
-        commandClient.sendCommand(mode.stop);
+        commandClient.sendCommand(mode.stop, 0, 0);
     }
 
     private void setupLayout() {
@@ -115,6 +126,13 @@ public class MainActivity extends ComponentActivity {
                 }
             }
         };
+    }
+
+    private void setupMessageClient() {
+        plainMessageClient.registerListener(message -> {
+            int result = Integer.parseInt(message.getPlainMessage().getMessage());
+            IntentManager.intentForTestResult(getApplicationContext(), result);
+        });
     }
 
     private void waitingToStart() {

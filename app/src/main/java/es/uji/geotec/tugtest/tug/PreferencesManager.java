@@ -1,4 +1,4 @@
-package es.uji.geotec.tugtest;
+package es.uji.geotec.tugtest.tug;
 
 import android.content.Context;
 import android.content.SharedPreferences;
