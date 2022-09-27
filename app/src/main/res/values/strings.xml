@@ -4,9 +4,7 @@
     This string is used for square devices and overridden by hello_world in
     values-round/strings.xml for round devices.
     -->
-    <string name="hello_world">Hello Square World!</string>
 
-    <string name="permissions_channel_description">Request permissions</string>
     <string name="permissions_notification_title">Permissions required</string>
     <string name="permissions_notification_body">Permissions needed for the application to work</string>
     <string name="permissions_info">Going to request permissions</string>
@@ -14,9 +12,8 @@
     <string name="permissions_denied">Permissions denied!</string>
     <string name="permissions_denied_info">Permissions rejected: </string>
 
-    <string name="sensoring_channel_description">Sensoring</string>
-    <string name="sensoring_notification_title">Sensoring</string>
-    <string name="sensoring_notification_body">Collecting data from sensors</string>
+    <string name="sensorization_notification_title">Sensorization</string>
+    <string name="sensorization_notification_text">Collecting data from sensors</string>
 
     <string name="start_info">Tap "Start test" to start a TUG test. The watch will vibrate when you can start executing it</string>
     <string name="start_test">Start test</string>
