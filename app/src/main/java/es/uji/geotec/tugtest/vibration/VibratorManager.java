@@ -1,4 +1,4 @@
-package es.uji.geotec.tugtest;
+package es.uji.geotec.tugtest.vibration;
 
 import static android.content.Context.VIBRATOR_SERVICE;
 

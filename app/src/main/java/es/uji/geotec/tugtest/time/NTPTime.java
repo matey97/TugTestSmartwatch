@@ -1,10 +1,12 @@
-package es.uji.geotec.tugtest;
+package es.uji.geotec.tugtest.time;
 
 import android.util.Log;
 
 import com.nesl.ntp.GoodClock;
 
-public class NTPTime {
+import es.uji.geotec.backgroundsensors.time.TimeProvider;
+
+public class NTPTime extends TimeProvider {
 
     private static NTPTime instance;
 
@@ -28,7 +30,8 @@ public class NTPTime {
         return success;
     }
 
-    public long currentTime() {
+    @Override
+    public long getTimestamp() {
         return clock.SntpSuceeded ? clock.Now() : System.currentTimeMillis();
     }
 }
