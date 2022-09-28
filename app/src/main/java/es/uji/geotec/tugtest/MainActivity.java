@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -21,9 +20,9 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import es.uji.geotec.tugtest.intent.IntentManager;
 import es.uji.geotec.tugtest.tug.ApplicationMode;
 import es.uji.geotec.tugtest.tug.PreferencesManager;
-import es.uji.geotec.tugtest.tug.TugTestCommandClient;
 import es.uji.geotec.tugtest.tug.TugTestSensorRecordingService;
 import es.uji.geotec.wearossensors.permissions.PermissionsManager;
+import es.uji.geotec.wearossensors.plainmessage.PlainMessage;
 import es.uji.geotec.wearossensors.plainmessage.PlainMessageClient;
 import es.uji.geotec.wearossensors.services.RecordingServiceManager;
 
@@ -38,7 +37,6 @@ public class MainActivity extends ComponentActivity {
 
     private BroadcastReceiver receiver;
 
-    private TugTestCommandClient commandClient;
     private PlainMessageClient plainMessageClient;
     private PreferencesManager preferencesManager;
 
@@ -47,7 +45,6 @@ public class MainActivity extends ComponentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        commandClient = new TugTestCommandClient(this);
         plainMessageClient = new PlainMessageClient(this);
         preferencesManager = new PreferencesManager(this);
         PermissionsManager.setPermissionsActivity(this, RequestPermissionsActivity.class);
@@ -76,11 +73,14 @@ public class MainActivity extends ComponentActivity {
 
     public void onStartCommandTap(View view) {
         waitingToStart();
-        commandClient.sendCommand(mode.start, SensorManager.SENSOR_DELAY_FASTEST, 50);
+
+        PlainMessage endMessage = new PlainMessage(mode.start);
+        plainMessageClient.send(endMessage);
     }
 
     public void onStopCommandTap(View view) {
-        commandClient.sendCommand(mode.stop, 0, 0);
+        PlainMessage endMessage = new PlainMessage(mode.stop);
+        plainMessageClient.send(endMessage);
     }
 
     private void setupLayout() {
@@ -131,7 +131,8 @@ public class MainActivity extends ComponentActivity {
     private void setupMessageClient() {
         plainMessageClient.registerListener(message -> {
             int result = Integer.parseInt(message.getPlainMessage().getMessage());
-            IntentManager.intentForTestResult(getApplicationContext(), result);
+            Intent intent = IntentManager.intentForTestResult(getApplicationContext(), result);
+            getApplicationContext().startActivity(intent);
         });
     }
 
