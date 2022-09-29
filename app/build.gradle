@@ -37,6 +37,5 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'androidx.wear:wear:1.0.0'
     implementation 'io.github.geotecinit:wear-os-sensors:1.1.0-debug'
-    implementation files('libs/good-clock.aar')
     compileOnly 'com.google.android.wearable:wearable:2.8.1'
 }

@@ -6,14 +6,14 @@ import android.widget.Toast;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import es.uji.geotec.backgroundsensors.collection.CollectorManager;
-import es.uji.geotec.backgroundsensors.service.SensorRecordingService;
+import es.uji.geotec.backgroundsensors.service.NTPSyncedSensorRecordingService;
+import es.uji.geotec.backgroundsensors.time.NTPTimeProvider;
 import es.uji.geotec.tugtest.R;
 import es.uji.geotec.tugtest.vibration.VibratorManager;
 import es.uji.geotec.tugtest.intent.IntentManager;
-import es.uji.geotec.tugtest.time.NTPTime;
 import es.uji.geotec.wearossensors.collection.WearCollectorManager;
 
-public class TugTestSensorRecordingService extends SensorRecordingService {
+public class TugTestSensorRecordingService extends NTPSyncedSensorRecordingService {
 
     private PreferencesManager preferencesManager;
     private VibratorManager vibratorManager;
@@ -25,9 +25,7 @@ public class TugTestSensorRecordingService extends SensorRecordingService {
         preferencesManager = new PreferencesManager(this);
         vibratorManager = new VibratorManager(this);
 
-        NTPTime ntpTime = NTPTime.getInstance();
-        boolean success = ntpTime.sync();
-        if (!success && preferencesManager.getApplicationMode() == ApplicationMode.COLLECTION) {
+        if (!ntpSynced && preferencesManager.getApplicationMode() == ApplicationMode.COLLECTION) {
             abortCollection();
             return;
         }
@@ -45,7 +43,7 @@ public class TugTestSensorRecordingService extends SensorRecordingService {
 
     @Override
     public CollectorManager getCollectorManager() {
-        return new WearCollectorManager(this, NTPTime.getInstance());
+        return new WearCollectorManager(this, NTPTimeProvider.getInstance());
     }
 
     @Override
