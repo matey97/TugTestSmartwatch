@@ -17,7 +17,7 @@ The changing behaviour is what is done with that data in the smartphone:
 - COLLECTION: the data is stored in a file to be used later for diverse purposes (e.g., analysis, processing, model training, etc...)
 
 This application is part of the system developed and described in the AIME 2022 conference paper 
-*Instrumented Timed Up and Go test using inertial sensors from consumer wearable devices*.
+*Instrumented Timed Up and Go test using inertial sensors from consumer wearable devices* [[1]](#1).
 
 ## Requirements
 The usage of this application has some hardware and software requirements:
@@ -40,8 +40,8 @@ smartwatch application on its own offers no functionality (i.e., apps complement
 ### Clone repository
 Download this repository as a ZIP and extract it or clone it executing:
 
-```
-> git clone https://github.com/matey97/TugTestSmartwatch.git
+```bash
+git clone https://github.com/matey97/TugTestSmartwatch.git
 ```
 
 ### Install Android Studio
@@ -86,6 +86,10 @@ During the collection, the following screen will be shown. The user will have to
 no end the data collection process.
 
 ![COLLECTION end](screenshots/sw_col_end.png)
+
+## References
+<a id="1">[1]</a>
+Matey-Sanz, M., González-Pérez, A., Casteleyn, S., Granell, C. (2022). Instrumented Timed Up and Go Test Using Inertial Sensors from Consumer Wearable Devices. In: Michalowski, M., Abidi, S.S.R., Abidi, S. (eds) Artificial Intelligence in Medicine. AIME 2022. Lecture Notes in Computer Science(), vol 13263. Springer, Cham. https://doi.org/10.1007/978-3-031-09342-5_14
 
 ## License
 

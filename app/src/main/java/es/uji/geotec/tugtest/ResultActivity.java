@@ -8,6 +8,9 @@ import androidx.activity.ComponentActivity;
 
 import java.text.DecimalFormat;
 
+import es.uji.geotec.tugtest.intent.IntentManager;
+import es.uji.geotec.tugtest.vibration.VibratorManager;
+
 public class ResultActivity extends ComponentActivity {
 
     private TextView info, time, unit, extendedInfo;

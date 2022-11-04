@@ -1,4 +1,4 @@
-package es.uji.geotec.tugtest;
+package es.uji.geotec.tugtest.tug;
 
 public enum ApplicationMode {
     TUG("start-execution", "stop-execution"),
