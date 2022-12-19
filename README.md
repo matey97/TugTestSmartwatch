@@ -7,7 +7,7 @@ a smartwatch and send it to the companion app, [TUG Test Smartphone](https://git
 running in the paired smartphone. That application uses the collected data to automatically extract 
 the results of the execution of the TUG test.
 
-The application has to functioning modes. In both modes, the application collects data from the 
+The application has two functioning modes. In both modes, the application collects data from the 
 accelerometer and gyroscope of the device and sends it to the smartphone. 
 The changing behaviour is what is done with that data in the smartphone:
 
@@ -15,9 +15,6 @@ The changing behaviour is what is done with that data in the smartphone:
   being performed by the user. This is the mode to be used to execute the TUG test and automatically get
   its results with the smartphone application.
 - COLLECTION: the data is stored in a file to be used later for diverse purposes (e.g., analysis, processing, model training, etc...)
-
-This application is part of the system developed and described in the AIME 2022 conference paper 
-*Instrumented Timed Up and Go test using inertial sensors from consumer wearable devices* [[1]](#1).
 
 ## Requirements
 The usage of this application has some hardware and software requirements:
@@ -87,10 +84,6 @@ no end the data collection process.
 
 ![COLLECTION end](screenshots/sw_col_end.png)
 
-## References
-<a id="1">[1]</a>
-Matey-Sanz, M., González-Pérez, A., Casteleyn, S., Granell, C. (2022). Instrumented Timed Up and Go Test Using Inertial Sensors from Consumer Wearable Devices. In: Michalowski, M., Abidi, S.S.R., Abidi, S. (eds) Artificial Intelligence in Medicine. AIME 2022. Lecture Notes in Computer Science(), vol 13263. Springer, Cham. https://doi.org/10.1007/978-3-031-09342-5_14
-
 ## License
 
-See [LICENSE](./LICENSE).
+Apache License 2.0. See [LICENSE](./LICENSE).
