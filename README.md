@@ -87,3 +87,13 @@ no end the data collection process.
 ## License
 
 Apache License 2.0. See [LICENSE](./LICENSE).
+
+## Author
+
+<a href="https://github.com/matey97" title="Miguel Matey Sanz">
+  <img src="https://avatars3.githubusercontent.com/u/25453537?s=120" alt="Miguel Matey Sanz" width="120"/>
+</a>
+
+## Acknowledgements
+
+The development of this application has been possible thanks to the Spanish Ministry of Universities [grant FPU19/05352] and by MCIN/AEI/10.13039/501100011033 [grants PID2020-120250RB-I00, PID2022-1404475OB-C21, PID2022-1404475OB-C22].
