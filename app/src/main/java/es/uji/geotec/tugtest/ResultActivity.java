@@ -2,6 +2,7 @@ package es.uji.geotec.tugtest;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.ComponentActivity;
@@ -14,6 +15,7 @@ import es.uji.geotec.tugtest.vibration.VibratorManager;
 public class ResultActivity extends ComponentActivity {
 
     private TextView info, time, unit, extendedInfo;
+    private ImageView warningIcon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,19 +33,32 @@ public class ResultActivity extends ComponentActivity {
         time = findViewById(R.id.result_time);
         unit = findViewById(R.id.result_unit);
         extendedInfo = findViewById(R.id.result_extended_info);
+        warningIcon = findViewById(R.id.warning_icon);
     }
 
     private void updateUIStatus(int result) {
-        boolean success = result != -1;
+        boolean success = result > 0;
 
         if (success) {
             DecimalFormat df = new DecimalFormat("#.##");
             time.setText(df.format(result / 1000.0));
         } else {
-            info.setText(R.string.result_info_failure);
+            int infoTextId;
+            switch (result) {
+                case -1:
+                    infoTextId = R.string.result_info_failure;
+                    break;
+                case -2:
+                    infoTextId = R.string.result_info_proc_breach;
+                    break;
+                default:
+                    infoTextId = R.string.result_info_unknown;
+            }
+            info.setText(infoTextId);
             time.setVisibility(View.GONE);
             unit.setVisibility(View.GONE);
             extendedInfo.setVisibility(View.GONE);
+            warningIcon.setVisibility(View.VISIBLE);
         }
     }
 
