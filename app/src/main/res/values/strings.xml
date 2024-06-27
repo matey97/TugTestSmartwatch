@@ -29,7 +29,9 @@
 
     <string name="result_title">TUG Result</string>
     <string name="result_info_success">Time used to perform the test:</string>
-    <string name="result_info_failure">Something went wrong. Try again.</string>
+    <string name="result_info_failure">Unable to compute results due to recognition errors. Please, repeat the test.</string>
+    <string name="result_info_proc_breach">TUG test aborted due to procedural breach. Please, repeat the test.</string>
+    <string name="result_info_unknown">Unknown error. Please, repeat the test.</string>
     <string name="result_unit">seconds</string>
     <string name="result_extended_info">Go to smartphone app to see detailed results</string>
 
